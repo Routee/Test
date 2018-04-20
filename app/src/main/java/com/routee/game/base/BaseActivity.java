@@ -3,6 +3,8 @@ package com.routee.game.base;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import butterknife.ButterKnife;
+
 /**
  * @author: Routee
  * @date 2018/4/20
@@ -17,6 +19,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        ButterKnife.bind(this);
     }
 
     public abstract void initView();
