@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Game</string>
+    <string name="permission_write_external_storage">暂无权限打开相册，请添加文件存储权限</string>
+    <string name="permission_camera">暂无权限打开相机，请添加相机权限</string>
 </resources>

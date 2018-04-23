@@ -41,4 +41,6 @@ hs*.log
 apkinfo.pyc
 redex-src-strings-map.txt
 /.idea
+*.impl
 /app.iml
+.idea/*

@@ -3,10 +3,10 @@ package com.routee.game.module.game;
 import android.Manifest;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.routee.game.R;
 import com.routee.game.base.BaseActivity;
+import com.routee.game.utils.PermissionDialogHelper;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindView;
@@ -32,20 +32,42 @@ public class GameActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.bt_select_pic:
                 if (new RxPermissions(this).isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    slectPic();
+                    selectPic();
                 } else {
-                    new RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    new RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            .subscribe(granted -> {
+                                if (granted) {
+                                    selectPic();
+                                } else {
+                                    new PermissionDialogHelper(GameActivity.this).setMsg(getString(R.string.permission_write_external_storage)).show();
+                                }
+                            });
                 }
                 break;
             case R.id.bt_take_pic:
-                Toast.makeText(this, "拍照", Toast.LENGTH_SHORT).show();
+                if (new RxPermissions(this).isGranted(Manifest.permission.CAMERA)) {
+                    selectPic();
+                } else {
+                    new RxPermissions(this).request(Manifest.permission.CAMERA)
+                            .subscribe(granted -> {
+                                if (granted) {
+                                    takePic();
+                                } else {
+                                    new PermissionDialogHelper(GameActivity.this).setMsg(getString(R.string.permission_camera)).show();
+                                }
+                            });
+                }
                 break;
             default:
                 break;
         }
     }
 
-    private void slectPic() {
+    private void takePic() {
+
+    }
+
+    private void selectPic() {
 
     }
 }
