@@ -52,7 +52,6 @@ public class GameActivity extends BaseActivity {
     }
 
     private void selectPic() {
-
     }
 
     @Override
