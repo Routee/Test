@@ -4,11 +4,20 @@ import android.Manifest;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.lzy.imagepicker.view.CropImageView;
 import com.routee.game.R;
 import com.routee.game.base.BaseActivity;
 import com.routee.game.utils.PermissionDialogHelper;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -18,14 +27,24 @@ import butterknife.OnClick;
  */
 public class GameActivity extends BaseActivity {
 
+    private static final int IMAGE_PICKER = 100;
     @BindView(R.id.bt_select_pic)
-    Button mBtSelectPic;
+    Button    mBtSelectPic;
+    @BindView(R.id.iv)
+    ImageView mIv;
 
     private final int SELECT_PIC = 100;
+    private ImageItem mImageItem;
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_main);
+        ImagePicker imagePicker = ImagePicker.getInstance();
+        imagePicker.setImageLoader(new GlideImageLoader());   //设置图片加载器
+        imagePicker.setShowCamera(true);  //显示拍照按钮
+        imagePicker.setCrop(true);        //允许裁剪（单选才有效）
+        imagePicker.setSelectLimit(1);    //选中数量限制
+        imagePicker.setStyle(CropImageView.Style.RECTANGLE);  //裁剪框的形状
     }
 
     @OnClick({R.id.bt_select_pic})
@@ -52,10 +71,21 @@ public class GameActivity extends BaseActivity {
     }
 
     private void selectPic() {
+        Intent intent = new Intent(this, ImageGridActivity.class);
+        startActivityForResult(intent, IMAGE_PICKER);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            if (data != null && requestCode == IMAGE_PICKER) {
+                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+                mImageItem = images.get(0);
+                Glide.with(this).load(mImageItem.path).asBitmap().into(mIv);
+            } else {
+                Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
