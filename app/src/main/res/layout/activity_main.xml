@@ -13,12 +13,6 @@
         android:layout_height="wrap_content"
         android:text="Select_Pic"/>
 
-    <Button
-        android:id="@+id/bt_take_pic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Take_Pic"/>
-
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -1,6 +1,7 @@
 package com.routee.game.module.game;
 
 import android.Manifest;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 
@@ -19,41 +20,28 @@ public class GameActivity extends BaseActivity {
 
     @BindView(R.id.bt_select_pic)
     Button mBtSelectPic;
-    @BindView(R.id.bt_take_pic)
-    Button mBtTakePic;
+
+    private final int SELECT_PIC = 100;
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_main);
     }
 
-    @OnClick({R.id.bt_select_pic, R.id.bt_take_pic})
+    @OnClick({R.id.bt_select_pic})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_select_pic:
-                if (new RxPermissions(this).isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                RxPermissions rxPermissions = new RxPermissions(this);
+                if (rxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) && rxPermissions.isGranted(Manifest.permission.CAMERA)) {
                     selectPic();
                 } else {
-                    new RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                             .subscribe(granted -> {
                                 if (granted) {
                                     selectPic();
                                 } else {
-                                    new PermissionDialogHelper(GameActivity.this).setMsg(getString(R.string.permission_write_external_storage)).show();
-                                }
-                            });
-                }
-                break;
-            case R.id.bt_take_pic:
-                if (new RxPermissions(this).isGranted(Manifest.permission.CAMERA)) {
-                    selectPic();
-                } else {
-                    new RxPermissions(this).request(Manifest.permission.CAMERA)
-                            .subscribe(granted -> {
-                                if (granted) {
-                                    takePic();
-                                } else {
-                                    new PermissionDialogHelper(GameActivity.this).setMsg(getString(R.string.permission_camera)).show();
+                                    new PermissionDialogHelper(this).setMsg("没有文件存储或相机权限，请去设置页添加相应权限").show();
                                 }
                             });
                 }
@@ -63,11 +51,12 @@ public class GameActivity extends BaseActivity {
         }
     }
 
-    private void takePic() {
+    private void selectPic() {
 
     }
 
-    private void selectPic() {
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
