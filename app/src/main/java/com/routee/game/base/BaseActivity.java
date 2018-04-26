@@ -20,7 +20,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initView();
         ButterKnife.bind(this);
+        setView();
     }
+
+    public abstract void setView();
 
     public abstract void initView();
 }

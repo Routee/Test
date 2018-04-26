@@ -48,6 +48,9 @@ public class NinePicGameView extends RelativeLayout {
     private int             mMoveOrientation;       //记录手指滑动方向
     private boolean         isMoveFinish;           //记录滑块移动结束状态
     private FinishListener  mListener;              //完成拼图完成监听
+    private Bitmap          mBitmap;
+    private long            mStartMills;            //记录游戏开始时间
+    private boolean         finished;               //记录游戏是否完成
 
     public NinePicGameView(Context context) {
         this(context, null);
@@ -70,6 +73,10 @@ public class NinePicGameView extends RelativeLayout {
     }
 
     public void setImage(String path) {
+        mStartMills = System.currentTimeMillis();
+        finished = false;
+        mCurrentItem = 0;
+        mBlankItem = 0;
         mImagePath = path;
         removeAllViews();
         initRects();
@@ -101,10 +108,10 @@ public class NinePicGameView extends RelativeLayout {
         if (TextUtils.isEmpty(mImagePath)) {
             return null;
         }
-        Bitmap bitmap = BitmapFactory.decodeFile(mImagePath);
+        mBitmap = BitmapFactory.decodeFile(mImagePath);
         List<Units> bms = new ArrayList<>();
-        int bw = bitmap.getWidth();
-        int bh = bitmap.getHeight();
+        int bw = mBitmap.getWidth();
+        int bh = mBitmap.getHeight();
         float scale = 1;
         if ((getWidth() * 1.0f) / (bw * 1.0f) > (getHeight() * 1.0f) / (bh * 1.0f)) {
             scale = (getWidth() * 1.0f) / (bw * 1.0f);
@@ -113,30 +120,54 @@ public class NinePicGameView extends RelativeLayout {
         }
         Matrix matrix = new Matrix();
         matrix.setScale(scale, scale);
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-                bitmap.getHeight(), matrix, true);
-        bw = bitmap.getWidth();
-        bh = bitmap.getHeight();
+        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(),
+                mBitmap.getHeight(), matrix, true);
+        bw = mBitmap.getWidth();
+        bh = mBitmap.getHeight();
         if (bw * 1.f / bh > getWidth() * 1.f / getHeight()) {
-            bitmap = Bitmap.createBitmap(bitmap, (bw - getWidth()) / 2, 0, getWidth(), getHeight());
+            mBitmap = Bitmap.createBitmap(mBitmap, (bw - getWidth()) / 2, 0, getWidth(), getHeight());
         } else {
-            bitmap = Bitmap.createBitmap(bitmap, 0, (bh - getHeight()) / 2, getWidth(), getHeight());
+            mBitmap = Bitmap.createBitmap(mBitmap, 0, (bh - getHeight()) / 2, getWidth(), getHeight());
         }
-        //        if (BuildConfig.DEBUG) {
-        //            android.util.Log.e("xxxxxx", "bitmapWidth = " + bitmap.getWidth()
-        //                                                 + "\r\nbitmapHeight = " + bitmap.getHeight()
-        //                                                 + "\r\nviewWidth = " + getWidth()
-        //                                                 + "\r\nviewHeight = " + getHeight());
-        //        }
         for (int i = 0; i < mColumns * mColumns; i++) {
             if (i != mColumns * mColumns - 1) {
-                bms.add(new Units(Bitmap.createBitmap(bitmap, i % mColumns * getWidth() / mColumns, i / mColumns * getHeight() / mColumns, getWidth() / mColumns, getHeight() / mColumns), i));
+                bms.add(new Units(Bitmap.createBitmap(mBitmap, i % mColumns * getWidth() / mColumns, i / mColumns * getHeight() / mColumns, getWidth() / mColumns, getHeight() / mColumns), i));
             } else {
-                Collections.shuffle(bms);
+                sortBlocks(bms);
                 bms.add(new Units(Bitmap.createBitmap(getWidth() / mColumns, getHeight() / mColumns, Bitmap.Config.ALPHA_8), i));
             }
         }
         return bms;
+    }
+
+    private void sortBlocks(List<Units> bms) {
+        if (mColumns % 2 == 0) {
+            for (int i = 0; i < 40; i++) {
+                int index = (int) (Math.random() * bms.size());
+                if (index % mColumns + 2 > mColumns) {
+                    if (index - 2 >= 0) {
+                        Collections.swap(bms, index, index - 2);
+                    } else {
+                        Collections.swap(bms, index, index + mColumns * 2);
+                    }
+                } else {
+                    if (index + 2 < bms.size()) {
+                        Collections.swap(bms, index, index + 2);
+                    } else {
+                        Collections.swap(bms, index, index - mColumns * 2);
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 60; i++) {
+                int index = (int) (Math.random() * bms.size());
+                if (index + 2 >= bms.size()) {
+                    Collections.swap(bms, index, index - 2);
+                } else {
+                    Collections.swap(bms, index, index + 2);
+                }
+            }
+        }
     }
 
     @Override
@@ -158,13 +189,17 @@ public class NinePicGameView extends RelativeLayout {
 
     private void measureChild() {
         for (int i = 0; i < getChildCount(); i++) {
+            if (i == mColumns * mColumns) {
+                getChildAt(i).measure(getWidth(), getHeight());
+                return;
+            }
             getChildAt(i).measure(getWidth() / mColumns - mSeparatorWidth, getHeight() / mColumns - mSeparatorWidth);
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getPointerCount() > 1 || TextUtils.isEmpty(mImagePath)) {
+        if (event.getPointerCount() > 1 || TextUtils.isEmpty(mImagePath) || finished) {
             return false;
         }
         mX = event.getX();
@@ -204,7 +239,15 @@ public class NinePicGameView extends RelativeLayout {
     }
 
     private void calcResult() {
-        // TODO: 2018/4/25 检查运行游戏结果
+        for (int i = 1; i < mBms.size(); i++) {
+            if (mBms.get(i - 1).tag > mBms.get(i).tag) {
+                return;
+            }
+        }
+        finished = true;
+        if (mListener != null) {
+            mListener.finish(System.currentTimeMillis() - mStartMills);
+        }
     }
 
     private void resetChild() {
@@ -230,6 +273,10 @@ public class NinePicGameView extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         for (int i = 0; i < getChildCount(); i++) {
+            if (i == mColumns * mColumns) {
+                getChildAt(i).layout(0, 0, getWidth(), getHeight());
+                return;
+            }
             if (mCurrentItem == i) {
                 if (isMoveFinish) {
                     getChildAt(i).layout(mRects.get(mBlankItem).left + mSeparatorWidth / 2
@@ -402,8 +449,45 @@ public class NinePicGameView extends RelativeLayout {
         }
     }
 
-    interface FinishListener {
-        void finish();
+    public void showResult() {
+        int childCount = getChildCount();
+        if (childCount == mColumns * mColumns + 1 || TextUtils.isEmpty(mImagePath)) {
+            return;
+        }
+        ImageView imageView = new ImageView(getContext());
+        imageView.setImageBitmap(mBitmap);
+        RelativeLayout.LayoutParams lp = new LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        imageView.setLayoutParams(lp);
+        addView(imageView);
+        invalidate();
+    }
+
+    public void hideResult() {
+        if (TextUtils.isEmpty(mImagePath)) {
+            return;
+        }
+        removeViewAt(getChildCount() - 1);
+        invalidate();
+    }
+
+    public void setEasier() {
+        if (TextUtils.isEmpty(mImagePath) || mColumns <= 3) {
+            return;
+        }
+        mColumns -= 1;
+        setImage(mImagePath);
+    }
+
+    public void setHarder() {
+        if (TextUtils.isEmpty(mImagePath) || mColumns >= 5) {
+            return;
+        }
+        mColumns += 1;
+        setImage(mImagePath);
+    }
+
+    public interface FinishListener {
+        void finish(long mills);
     }
 
     public void addFinishListener(FinishListener listener) {

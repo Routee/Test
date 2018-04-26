@@ -8,11 +8,39 @@
     android:orientation="vertical"
     tools:context="com.routee.game.module.game.GameActivity">
 
-    <Button
-        android:id="@+id/bt_select_pic"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select_Pic"/>
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bt_easy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Easy"/>
+
+        <Button
+            android:id="@+id/bt_hard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Hard"/>
+
+        <Button
+            android:id="@+id/bt_select_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Select_Pic"/>
+
+        <Button
+            android:id="@+id/bt_show_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Show_Pic"/>
+    </LinearLayout>
 
     <com.routee.game.view.NinePicGameView
         android:id="@+id/game_view"
