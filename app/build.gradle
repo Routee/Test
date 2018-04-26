@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'routee'
+            keyPassword 'asd123'
+            storeFile file('D:/AndroidDeveloperCode/routee.jks')
+            storePassword 'asd123'
+        }
+    }
     compileSdkVersion 25
     defaultConfig {
         applicationId "com.routee.game"
@@ -28,25 +36,20 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:25.4.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
     //黄油刀
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
     //RxPermission
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
-
     implementation 'com.android.support:multidex:1.0.3'
-
     implementation 'com.lzy.widget:imagepicker:0.6.1'
-
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 }
