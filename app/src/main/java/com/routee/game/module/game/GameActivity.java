@@ -20,26 +20,17 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 /**
  * @author Routee
  */
-public class GameActivity extends BaseActivity implements View.OnTouchListener, NinePicGameView.FinishListener {
+public class GameActivity extends BaseActivity implements View.OnTouchListener, NinePicGameView.FinishListener, View.OnClickListener {
 
     private static final int IMAGE_PICKER = 100;
-    @BindView(R.id.bt_select_pic)
     Button          mBtSelectPic;
-    @BindView(R.id.game_view)
     NinePicGameView mIv;
-    @BindView(R.id.bt_show_pic)
     Button          mBtShowPic;
-    @BindView(R.id.bt_easy)
     Button          mBtEasy;
-    @BindView(R.id.bt_hard)
     Button          mBtHard;
-    @BindView(R.id.tv_time)
     TextView        mTvTime;
 
     private ImageItem mImageItem;
@@ -53,6 +44,15 @@ public class GameActivity extends BaseActivity implements View.OnTouchListener, 
     @Override
     public void initView() {
         setContentView(R.layout.activity_main);
+        mBtSelectPic = (Button) findViewById(R.id.bt_select_pic);
+        mBtSelectPic.setOnClickListener(this);
+        mIv = (NinePicGameView) findViewById(R.id.game_view);
+        mBtShowPic = (Button) findViewById(R.id.bt_show_pic);
+        mBtEasy = (Button) findViewById(R.id.bt_easy);
+        mBtEasy.setOnClickListener(this);
+        mBtHard = (Button) findViewById(R.id.bt_hard);
+        mBtHard.setOnClickListener(this);
+        mTvTime = (TextView) findViewById(R.id.tv_time);
         ImagePicker imagePicker = ImagePicker.getInstance();
         imagePicker.setImageLoader(new GlideImageLoader());     //设置图片加载器
         imagePicker.setShowCamera(true);                        //显示拍照按钮
@@ -103,32 +103,28 @@ public class GameActivity extends BaseActivity implements View.OnTouchListener, 
         Toast.makeText(this, "Congratulations!!! It cost you " + seconds + "s", Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick({R.id.bt_easy, R.id.bt_hard, R.id.bt_select_pic})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.bt_easy:
-                mIv.setEasier();
-                break;
-            case R.id.bt_hard:
-                mIv.setHarder();
-                break;
-            case R.id.bt_select_pic:
-                RxPermissions rxPermissions = new RxPermissions(this);
-                if (rxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) && rxPermissions.isGranted(Manifest.permission.CAMERA)) {
-                    selectPic();
-                } else {
-                    rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                            .subscribe(granted -> {
-                                if (granted) {
-                                    selectPic();
-                                } else {
-                                    new PermissionDialogHelper(this).setMsg("没有文件存储或相机权限，请去设置页添加相应权限").show();
-                                }
-                            });
-                }
-                break;
-            default:
-                break;
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.bt_easy) {
+            mIv.setEasier();
+        } else if (i == R.id.bt_hard) {
+            mIv.setHarder();
+        } else if (i == R.id.bt_select_pic) {
+            RxPermissions rxPermissions = new RxPermissions(this);
+            if (rxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) && rxPermissions.isGranted(Manifest.permission.CAMERA)) {
+                selectPic();
+            } else {
+                rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                selectPic();
+                            } else {
+                                new PermissionDialogHelper(this).setMsg("没有文件存储或相机权限，请去设置页添加相应权限").show();
+                            }
+                        });
+            }
         }
     }
 }
