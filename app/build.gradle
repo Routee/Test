@@ -1,4 +1,6 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.Routee'
 
 android {
     signingConfigs {
@@ -11,7 +13,7 @@ android {
     }
     compileSdkVersion 25
     defaultConfig {
-        applicationId "com.routee.game"
+//        applicationId "com.routee.game"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
