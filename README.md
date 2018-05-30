@@ -57,3 +57,6 @@ private void sortBlocks(List<Units> bms) {
 > 其他说明
 - 使用了[RxPermission](https://github.com/tbruyelle/RxPermissions)对不同版本手机进行了拍照及文件读取权限处理
 - 使用了[ImagePicker](https://github.com/jeasonlzy/ImagePicker)图片选择框架选择手机内存图片或拍照
+
+
+[![](https://jitpack.io/v/Routee/test.svg)](https://jitpack.io/#Routee/test)
