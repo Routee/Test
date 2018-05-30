@@ -42,7 +42,6 @@ public class GameActivity extends BaseActivity implements View.OnTouchListener, 
     @BindView(R.id.tv_time)
     TextView        mTvTime;
 
-    private final int SELECT_PIC = 100;
     private ImageItem mImageItem;
 
     @Override
