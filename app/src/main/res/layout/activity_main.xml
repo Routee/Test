@@ -18,37 +18,48 @@
             android:id="@+id/bt_easy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Easy"/>
+            android:text="简单"/>
 
         <Button
             android:id="@+id/bt_hard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Hard"/>
+            android:text="困难"/>
 
         <Button
             android:id="@+id/bt_select_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Select_Pic"/>
+            android:text="选择图片"/>
 
         <Button
             android:id="@+id/bt_show_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Show_Pic"/>
+            android:text="显示原图"/>
     </LinearLayout>
 
     <com.routee.game.view.NinePicGameView
         android:id="@+id/game_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_margin="15dp"
+        android:layout_weight="1"
         android:background="#eea"
         android:scaleType="fitXY"
         app:separator_line_width="1"/>
 
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="开始时间:"
+        android:textColor="#5ca"
+        android:visibility="invisible"/>
 </LinearLayout>

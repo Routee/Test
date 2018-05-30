@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lzy.imagepicker.ImagePicker;
@@ -38,6 +39,8 @@ public class GameActivity extends BaseActivity implements View.OnTouchListener, 
     Button          mBtEasy;
     @BindView(R.id.bt_hard)
     Button          mBtHard;
+    @BindView(R.id.tv_time)
+    TextView        mTvTime;
 
     private final int SELECT_PIC = 100;
     private ImageItem mImageItem;
