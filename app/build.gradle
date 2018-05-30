@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        config {
-            keyAlias 'routee'
-            keyPassword 'asd123'
-            storeFile file('jks/routee.jks')
-            storePassword 'asd123'
-        }
+//        config {
+//            keyAlias 'routee'
+//            keyPassword 'asd123'
+//            storeFile file('jks/routee.jks')
+//            storePassword 'asd123'
+//        }
     }
     compileSdkVersion 25
     defaultConfig {
