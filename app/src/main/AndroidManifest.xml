@@ -3,13 +3,15 @@
           package="com.routee.game">
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
-        android:supportsRtl="true">
-        <!--<activity android:name=".module.game.GameActivity">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.MAIN"/>-->
-        <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-        <!--</intent-filter>-->
-        <!--</activity>-->
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".module.game.GameActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
